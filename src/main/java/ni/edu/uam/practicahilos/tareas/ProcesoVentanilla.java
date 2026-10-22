@@ -43,9 +43,8 @@ public class ProcesoVentanilla implements Runnable {
     public void run() {
         this.estado = "Ejecutando";
         for (int i = 1; i <= 5 && activo && !Thread.currentThread().isInterrupted(); i++) {
-            // Incrementar recurso compartido de forma segura
-            contador.incrementar();
-            int totalActual = contador.getTotal();
+            // Incrementar recurso compartido de forma atómica capturando el valor exacto
+            int totalActual = contador.incrementar();
 
             // Notificar progreso a través del callback si existe
             if (callbackProgreso != null) {
