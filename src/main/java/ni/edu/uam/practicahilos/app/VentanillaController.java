@@ -27,12 +27,15 @@ public class VentanillaController {
     private Thread hiloB;
     private Timeline monitorUI;
 
+    public VentanillaController() {
+    }
+
     @FXML
     public void initialize() {
         contador = new ContadorCompartido();
         btnDetener.setDisable(true);
 
-        // Monitor periódico para no saturar el Platform.runLater()
+        // Monitor periódico para refrescar la interfaz
         monitorUI = new Timeline(new KeyFrame(Duration.millis(100), e -> actualizarInterfaz()));
         monitorUI.setCycleCount(Timeline.INDEFINITE);
     }
@@ -44,8 +47,14 @@ public class VentanillaController {
         contador.reiniciar();
         registrarMensaje("Iniciando procesamiento...");
 
-        ventanillaA = new ProcesoVentanilla("Ventanilla A", contador);
-        ventanillaB = new ProcesoVentanilla("Ventanilla B", contador);
+        // AQUÍ SE AGREGAN LOS CALLBACKS DE PROGRESO PASO A PASO
+        ventanillaA = new ProcesoVentanilla("Ventanilla A", contador, (msg, total) ->
+                Platform.runLater(() -> registrarMensaje(msg + " | Total acumulado: " + total))
+        );
+
+        ventanillaB = new ProcesoVentanilla("Ventanilla B", contador, (msg, total) ->
+                Platform.runLater(() -> registrarMensaje(msg + " | Total acumulado: " + total))
+        );
 
         hiloA = new Thread(ventanillaA, "Ventanilla-A");
         hiloB = new Thread(ventanillaB, "Ventanilla-B");

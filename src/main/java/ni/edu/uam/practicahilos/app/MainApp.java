@@ -1,31 +1,29 @@
 package ni.edu.uam.practicahilos.app;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.net.URL;
 
 public class MainApp extends Application {
 
     @Override
-    public void start(Stage escenarioPrincipal) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ni/edu/uam/practicahilos/vista.fxml"));
-        Parent raiz = loader.load();
+    public void start(Stage primaryStage) throws Exception {
+        // La barra '/' inicial busca desde la raíz de la carpeta resources
+        URL fxmlLocation = getClass().getResource("/ni/edu/uam/practicahilos/ventana_principal.fxml");
 
-        Scene escena = new Scene(raiz);
-        escenarioPrincipal.setTitle("Laboratorio Concurrencia - Ventanillas");
-        escenarioPrincipal.setScene(escena);
+        if (fxmlLocation == null) {
+            throw new IllegalStateException("No se pudo encontrar el archivo FXML en la ruta especificada.");
+        }
 
-        escenarioPrincipal.setOnCloseRequest(evento -> {
-            Platform.exit();
-            System.exit(0);
-        });
+        FXMLLoader loader = new FXMLLoader(fxmlLocation);
+        Scene scene = new Scene(loader.load());
 
-        escenarioPrincipal.show();
+        primaryStage.setTitle("Sistema de Ventanillas Concurrente");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
